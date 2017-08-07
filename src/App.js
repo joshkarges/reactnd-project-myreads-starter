@@ -18,7 +18,10 @@ class BooksApp extends React.Component {
 
   updateBook = (book, shelf) => {
     this.setState((state) => {
-      const bookIdx = state.books.findIndex((b) => b.id === book.id)
+      let bookIdx = state.books.findIndex((b) => b.id === book.id)
+      if (bookIdx === -1) {
+        bookIdx = state.books.push(book) - 1
+      }
       state.books[bookIdx].shelf = shelf
       return {
         books: state.books

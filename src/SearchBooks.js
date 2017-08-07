@@ -1,31 +1,35 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import BookGrid from './BookGrid';
+import * as BooksAPI from './BooksAPI'
 
 class SearchBooks extends Component {
   state = {
-    query: ''
+    query: '',
+    searchResults: []
   }
 
   updateQuery = (query) => {
-    this.setState({ query: query.toLowerCase() })
+    this.setState({ query: query })
+    BooksAPI.search(query, 20).then((results) => {
+      for (var i = 0, iLen = results.length; i < iLen; i++) {
+        const r = results[i]
+        for (var j = 0, jLen = this.props.books.length; j < jLen; j++) {
+          const book = this.props.books[j];
+          if (r.id === book.id) {
+            results[i] = book;
+            break;
+          }
+        }
+      }
+      results.sort(sortBy('title'))
+      this.setState({searchResults: results})
+    })
   }
 
   render() {
-    const { books } = this.props
-    const { query } = this.state
-
-    let showingBooks
-    if (query) {
-      const match = new RegExp(escapeRegExp(query), 'i')
-      showingBooks = books.filter((book) => match.test(book.title) || book.authors.some((author) => match.test(author)))
-    } else {
-      showingBooks = books
-    }
-
-    showingBooks.sort(sortBy('title'))
+    const { query, searchResults } = this.state
 
     return (
       <div className="search-books">
@@ -41,7 +45,7 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <BookGrid books={showingBooks} updateBook={this.props.updateBook}/>
+          <BookGrid books={searchResults} updateBook={this.props.updateBook}/>
         </div>
       </div>
     )
