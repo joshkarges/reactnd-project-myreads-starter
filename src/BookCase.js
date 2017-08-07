@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import BookShelf from './BookShelf';
 
 class BookCase extends Component {
@@ -21,6 +22,9 @@ class BookCase extends Component {
           <BookShelf updateBook={this.props.updateBook} title='Currently Reading' books={bookShelves.currentlyReading}/>
           <BookShelf updateBook={this.props.updateBook} title='Want To Read' books={bookShelves.wantToRead}/>
           <BookShelf updateBook={this.props.updateBook} title='Read' books={bookShelves.read}/>
+        </div>
+        <div className="open-search">
+          <Link to='/search'>Add a book</Link>
         </div>
       </div>
     )
