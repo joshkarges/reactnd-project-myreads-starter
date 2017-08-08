@@ -13,6 +13,7 @@ class SearchBooks extends Component {
   updateQuery = (query) => {
     this.setState({ query: query })
     BooksAPI.search(query, 20).then((results) => {
+      if (!results) return;
       for (var i = 0, iLen = results.length; i < iLen; i++) {
         const r = results[i]
         for (var j = 0, jLen = this.props.books.length; j < jLen; j++) {

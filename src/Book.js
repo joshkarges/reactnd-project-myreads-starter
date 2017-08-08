@@ -1,25 +1,18 @@
 import React, { Component } from 'react';
 
+const DEFAULT_BOOK_COVER = 'https://books.google.com/googlebooks/images/no_cover_thumb.gif';
+
 class Book extends Component {
-  state = {
-    shelf: ''
-  }
-
-  updateShelf(book, shelf) {
-    this.setState({ shelf: shelf})
-    this.props.updateBook(book, shelf)
-  }
-
   render() {
     const { book } = this.props
     return (
       <div className='book'>
         <div className="book-top">
-          <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
+          <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${(book.imageLinks && book.imageLinks.thumbnail) || DEFAULT_BOOK_COVER})` }}></div>
           <div className="book-shelf-changer">
             <select
-              onChange={(event) => this.updateShelf(book, event.target.value)}
-              defaultValue={book.shelf}
+              onChange={(event) => this.props.updateBook(book, event.target.value)}
+              defaultValue={book.shelf || 'none'}
             >
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
