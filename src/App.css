@@ -83,6 +83,13 @@ body, .app {
   font-size: 1.25em;
   border: none;
   outline: none;
+  .empty {
+    color: red;
+  }
+}
+
+.search-books-bar .empty{
+  color: red;
 }
 
 .close-search {

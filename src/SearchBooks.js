@@ -7,13 +7,23 @@ import * as BooksAPI from './BooksAPI'
 class SearchBooks extends Component {
   state = {
     query: '',
-    searchResults: []
+    searchResults: [],
+    emptySearchResults: false
   }
 
-  updateQuery = (query) => {
+  updateQuery = (event) => {
+    var query = event.target.value;
     this.setState({ query: query })
+    if (!query) {
+      this.setState({ searchResults: [] })
+      return
+    }
     BooksAPI.search(query, 20).then((results) => {
       if (!results) return;
+      if (results.error) {
+        if (results.error === 'empty query') this.setState({emptySearchResults: true})
+        return
+      }
       for (var i = 0, iLen = results.length; i < iLen; i++) {
         const r = results[i]
         for (var j = 0, jLen = this.props.books.length; j < jLen; j++) {
@@ -25,7 +35,7 @@ class SearchBooks extends Component {
         }
       }
       results.sort(sortBy('title'))
-      this.setState({searchResults: results})
+      this.setState({searchResults: results, emptySearchResults: false})
     })
   }
 
@@ -41,7 +51,9 @@ class SearchBooks extends Component {
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={(event) => this.updateQuery(event.target.value)}
+              onChange={this.updateQuery}
+              className={this.state.emptySearchResults ? 'empty' : ''}
+              title={this.state.emptySearchResults ? 'No search results' : 'Note: Search terms are limited'}
             />
           </div>
         </div>
